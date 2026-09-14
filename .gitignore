@@ -1,0 +1,19 @@
+# Dependencias de Node.js
+codigo/node_modules/
+node_modules/
+
+# Variables de entorno con credenciales reales
+codigo/.env
+.env
+
+# Respaldos de base de datos
+*.bak
+
+# Registros y temporales
+*.log
+npm-debug.log*
+*.tmp
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
