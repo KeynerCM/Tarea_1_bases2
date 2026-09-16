@@ -5,8 +5,7 @@
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node src/server.js"
   },
   "keywords": [
     "api",
@@ -16,5 +15,10 @@
     "stored-procedures"
   ],
   "author": "Keyner Cerdas Morales",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mssql": "^12.7.2"
+  }
 }
