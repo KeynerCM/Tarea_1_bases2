@@ -6,7 +6,7 @@ Keyner Cerdas Morales - 2024108270
 Completado y funcional.
 
 ### Enlace del video:
-Pendiente de publicación.
+https://youtu.be/8RNsEUSl7Wo
 
 Recordar que el video debe ser público para ser visto por el profesor.
 
