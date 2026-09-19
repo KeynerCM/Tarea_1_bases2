@@ -15,18 +15,58 @@ Recordar que el video debe ser público para ser visto por el profesor.
 ## Tabla de contenidos
 
 1. [Introducción](#1-introducción)
+    - [Contexto](#contexto)
+    - [Objetivo](#objetivo)
+    - [Alcance](#alcance)
+    - [Datos del curso](#datos-del-curso)
 2. [Arquitectura de la solución](#2-arquitectura-de-la-solución)
+    - [Diagrama](#diagrama)
+    - [Recorrido de una petición](#recorrido-de-una-petición)
+    - [Decisiones de diseño](#decisiones-de-diseño)
 3. [Requerimientos previos](#3-requerimientos-previos)
+    - [Hardware](#hardware)
+    - [Software](#software)
+    - [Conocimientos](#conocimientos)
 4. [Instalación paso a paso](#4-instalación-paso-a-paso)
+    - [4.1 Preparar Ubuntu](#41-preparar-ubuntu)
+    - [4.2 Instalar SQL Server 2025](#42-instalar-sql-server-2025)
+    - [4.3 Instalar las herramientas de línea de comandos (sqlcmd)](#43-instalar-las-herramientas-de-línea-de-comandos-sqlcmd)
+    - [4.4 Verificar la conexión a SQL Server](#44-verificar-la-conexión-a-sql-server)
+    - [4.5 Restaurar la base de datos AdventureWorks2025](#45-restaurar-la-base-de-datos-adventureworks2025)
+    - [4.6 Instalar Node.js 20](#46-instalar-nodejs-20)
+    - [4.7 Instalar Postman](#47-instalar-postman)
+    - [4.8 Clonar el repositorio](#48-clonar-el-repositorio)
 5. [Configuración](#5-configuración)
+    - [5.1 Ejecutar los scripts SQL](#51-ejecutar-los-scripts-sql)
+    - [5.2 Variables de entorno](#52-variables-de-entorno)
+    - [5.3 Instalar las dependencias de Node.js](#53-instalar-las-dependencias-de-nodejs)
 6. [Estructura del repositorio](#6-estructura-del-repositorio)
 7. [Stored Procedures](#7-stored-procedures)
+    - [Resumen](#resumen)
+    - [Detalle](#detalle)
+    - [Errores propios](#errores-propios)
+    - [Ejemplos de ejecución directa](#ejemplos-de-ejecución-directa)
 8. [Servicios web (endpoints)](#8-servicios-web-endpoints)
+    - [Contrato](#contrato)
+    - [Parámetros](#parámetros)
+    - [Formato de respuesta](#formato-de-respuesta)
+    - [Códigos HTTP](#códigos-http)
+    - [Ejemplos rápidos con curl](#ejemplos-rápidos-con-curl)
 9. [Ejecución del proyecto](#9-ejecución-del-proyecto)
+    - [Iniciar la API](#iniciar-la-api)
+    - [Verificar que funciona](#verificar-que-funciona)
+    - [Detener la API](#detener-la-api)
 10. [Datos de prueba](#10-datos-de-prueba)
-11. [Video de demostración](#11-video-de-demostración)
-12. [Solución de problemas frecuentes](#12-solución-de-problemas-frecuentes)
-13. [Referencias](#13-referencias)
+    - [Importar la colección](#importar-la-colección)
+    - [Escenario 0: estado del servicio](#escenario-0-estado-del-servicio)
+    - [Escenario 1: estado inicial](#escenario-1-estado-inicial)
+    - [Escenario 2: crear un departamento (INSERT)](#escenario-2-crear-un-departamento-insert)
+    - [Escenario 3: actualizar el departamento (UPDATE)](#escenario-3-actualizar-el-departamento-update)
+    - [Escenario 4: borrar el departamento (DELETE exitoso)](#escenario-4-borrar-el-departamento-delete-exitoso)
+    - [Escenario 5: borrado rechazado por llave foránea](#escenario-5-borrado-rechazado-por-llave-foránea)
+    - [Escenario 6: consulta con JOIN](#escenario-6-consulta-con-join)
+    - [Escenario 7: validaciones y errores](#escenario-7-validaciones-y-errores)
+11. [Referencias](#11-referencias)
 
 ---
 
@@ -202,7 +242,7 @@ Codename:	jammy
 
 ### 4.2 Instalar SQL Server 2025
 
-**Por qué la versión 2025.** El respaldo `AdventureWorks2025.bak` fue generado por SQL Server 2025. SQL Server puede restaurar respaldos de versiones anteriores, pero nunca de versiones más nuevas. Si se instala SQL Server 2022 e intenta restaurar este respaldo, falla con el error 3169 (ver la sección [12](#12-solución-de-problemas-frecuentes)). Por eso se instala directamente la versión 2025.
+**Por qué la versión 2025.** El respaldo `AdventureWorks2025.bak` fue generado por SQL Server 2025. SQL Server puede restaurar respaldos de versiones anteriores, pero nunca de versiones más nuevas. Si se instala SQL Server 2022 e intenta restaurar este respaldo, falla con el error 3169, que indica que el respaldo pertenece a una versión más nueva del motor. Por eso se instala directamente la versión 2025.
 
 **Paso 1. Registrar la llave de Microsoft.** Ubuntu solo instala paquetes de repositorios en los que confía. Esta llave permite verificar que los paquetes de SQL Server realmente vienen de Microsoft:
 
@@ -339,7 +379,7 @@ Microsoft SQL Server 2025 (RTM-CU8-GDR) (KB5122769) - 17.0.4085.5 (X64)
 	Enterprise Developer Edition (64-bit) on Linux (Ubuntu 22.04.5 LTS) <X64>
 ```
 
-Si aparece `Login failed for user 'sa'`, la contraseña no coincide; la sección [12](#12-solución-de-problemas-frecuentes) explica cómo restablecerla.
+Si aparece `Login failed for user 'sa'`, la contraseña escrita no coincide con la que se definió en el paso 4.2.
 
 ### 4.5 Restaurar la base de datos AdventureWorks2025
 
@@ -566,7 +606,7 @@ Stored Procedure [api].[usp_Department_SelectAll] creado correctamente.
 Stored Procedure [api].[usp_EmployeesByDepartment_Select] creado correctamente.
 ```
 
-**Los scripts se pueden ejecutar más de una vez.** Usan `CREATE OR ALTER PROCEDURE` e `IF NOT EXISTS`, así que volver a ejecutarlos actualiza los procedimientos sin dar error. Una consecuencia: si el login `api_user` ya existe, el script `02` no le cambia la contraseña (ver la sección [12](#12-solución-de-problemas-frecuentes) para cambiarla).
+**Los scripts se pueden ejecutar más de una vez.** Usan `CREATE OR ALTER PROCEDURE` e `IF NOT EXISTS`, así que volver a ejecutarlos actualiza los procedimientos sin dar error. Una consecuencia: si el login `api_user` ya existe, el script `02` no le cambia la contraseña. Para cambiarla se ejecuta, como `sa`, la sentencia `ALTER LOGIN api_user WITH PASSWORD = '<CLAVE_API_USER>';`.
 
 **Verificar los permisos de `api_user`.** Este paso comprueba el principio de mínimo privilegio. Primero, `api_user` sí puede ejecutar un Stored Procedure:
 
@@ -690,8 +730,7 @@ Tarea_1_bases2/
 │   │   ├── routes.js                  Endpoints, validaciones y manejo de errores
 │   │   └── db.js                      Pool único de conexiones a SQL Server
 │   └── docs/
-│       ├── coleccion_postman.json     Colección de pruebas para importar en Postman
-│       └── capturas/                  Capturas de las pruebas en Postman
+│       └── coleccion_postman.json     Colección de pruebas para importar en Postman
 │
 └── proyectos/                         Proyecto empaquetado en ZIP
     └── README.MD
@@ -952,13 +991,9 @@ Las respuestas de esta sección son las que devolvió la API durante las pruebas
 }
 ```
 
-![Escenario 0 - health](codigo/docs/capturas/00_health.png)
-
 ### Escenario 1: estado inicial
 
 **Lista completa.** `GET {{baseUrl}}/departments?offset=0&limit=50` devuelve los 16 departamentos originales de AdventureWorks, con `meta.total = 16`.
-
-![Escenario 1 - lista completa](codigo/docs/capturas/01_lista.png)
 
 **Paginación.** `GET {{baseUrl}}/departments?offset=5&limit=3` salta los primeros 5 y devuelve los 3 siguientes. `meta.total` sigue siendo 16, porque cuenta todos los registros, no solo los de la página:
 
@@ -1022,8 +1057,6 @@ Las respuestas de esta sección son las que devolvió la API durante las pruebas
 }
 ```
 
-![Escenario 1 - lista filtrada](codigo/docs/capturas/01_lista_filtrada.png)
-
 **Consulta por identificador.** `GET {{baseUrl}}/departments/1` responde `200 OK`:
 
 ```json
@@ -1039,8 +1072,6 @@ Las respuestas de esta sección son las que devolvió la API durante las pruebas
   "error": null
 }
 ```
-
-![Escenario 1 - consulta por id](codigo/docs/capturas/01_por_id.png)
 
 ### Escenario 2: crear un departamento (INSERT)
 
@@ -1069,11 +1100,7 @@ Responde `201 Created`, con la cabecera `Location: /api/v1/departments/28`, que 
 }
 ```
 
-![Escenario 2 - crear](codigo/docs/capturas/02_post.png)
-
-La consulta `GET {{baseUrl}}/departments/{{departmentId}}` confirma que quedó guardado:
-
-![Escenario 2 - consulta del creado](codigo/docs/capturas/02_get_creado.png)
+La consulta `GET {{baseUrl}}/departments/{{departmentId}}` confirma que quedó guardado: responde `200 OK` con el mismo registro.
 
 ### Escenario 3: actualizar el departamento (UPDATE)
 
@@ -1107,15 +1134,9 @@ Responde `200 OK` con el registro ya actualizado. Cambian el nombre y la fecha d
 }
 ```
 
-![Escenario 3 - actualizar](codigo/docs/capturas/03_put.png)
-
-![Escenario 3 - verificación del cambio](codigo/docs/capturas/03_get_cambio.png)
-
 ### Escenario 4: borrar el departamento (DELETE exitoso)
 
 `DELETE {{baseUrl}}/departments/{{departmentId}}` responde `204 No Content`, sin cuerpo. Se puede borrar porque es un departamento nuevo, sin empleados en su historial.
-
-![Escenario 4 - borrar](codigo/docs/capturas/04_delete.png)
 
 Al consultarlo de nuevo, `GET {{baseUrl}}/departments/{{departmentId}}` responde `404 Not Found`:
 
@@ -1127,8 +1148,6 @@ Al consultarlo de nuevo, `GET {{baseUrl}}/departments/{{departmentId}}` responde
   "error": "No existe un departamento con id 28."
 }
 ```
-
-![Escenario 4 - consulta después de borrar](codigo/docs/capturas/04_get_404.png)
 
 ### Escenario 5: borrado rechazado por llave foránea
 
@@ -1144,8 +1163,6 @@ Al consultarlo de nuevo, `GET {{baseUrl}}/departments/{{departmentId}}` responde
 ```
 
 El departamento no se modifica: `GET {{baseUrl}}/departments/1` lo sigue devolviendo.
-
-![Escenario 5 - borrado rechazado](codigo/docs/capturas/05_delete_409.png)
 
 ### Escenario 6: consulta con JOIN
 
@@ -1224,8 +1241,6 @@ El departamento no se modifica: `GET {{baseUrl}}/departments/1` lo sigue devolvi
 }
 ```
 
-![Escenario 6 - empleados activos](codigo/docs/capturas/06_empleados_activos.png)
-
 **Incluyendo historial.** `GET {{baseUrl}}/departments/1/employees?activos=false` devuelve para **Engineering** 7 registros en lugar de 6: aparece también Rob Walters, que trabajó en el departamento entre 2007 y 2010. Fragmento de la respuesta:
 
 ```json
@@ -1247,8 +1262,6 @@ El departamento no se modifica: `GET {{baseUrl}}/departments/1` lo sigue devolvi
   "activos": false
 }
 ```
-
-![Escenario 6 - empleados con historial](codigo/docs/capturas/06_empleados_historial.png)
 
 Un departamento que existe pero no tiene empleados (por ejemplo, uno recién creado) responde `200 OK` con `"data": []`, no `404`. El `404` se reserva para departamentos que no existen.
 
@@ -1276,18 +1289,6 @@ Ejemplo de respuesta completa (identificador no numérico):
 }
 ```
 
-![Escenario 7 - nombre vacío](codigo/docs/capturas/07_nombre_vacio.png)
-
-![Escenario 7 - nombre demasiado largo](codigo/docs/capturas/07_nombre_largo.png)
-
-![Escenario 7 - nombre duplicado](codigo/docs/capturas/07_duplicado.png)
-
-![Escenario 7 - identificador inexistente](codigo/docs/capturas/07_id_inexistente.png)
-
-![Escenario 7 - identificador no numérico](codigo/docs/capturas/07_id_no_numerico.png)
-
-![Escenario 7 - actualizar inexistente](codigo/docs/capturas/07_put_inexistente.png)
-
 Otros casos que la API también controla, aunque no están en la colección:
 
 | Caso | Código | Mensaje |
@@ -1301,146 +1302,7 @@ Otros casos que la API también controla, aunque no están en la colección:
 
 ---
 
-## 11. Video de demostración
-
-Enlace: pendiente de publicación.
-
-Contenido del video:
-
-1. Presentación del estudiante y de la tarea.
-2. El sistema operativo (`lsb_release -a`) y el servicio de SQL Server activo.
-3. La base AdventureWorks2025 restaurada y el conteo de departamentos.
-4. Los Stored Procedures del esquema `api`, ejecutando la consulta de la tabla y la consulta con JOIN.
-5. El arranque de la API y el endpoint `/health`.
-6. La colección de Postman: listar, consultar, crear, actualizar, borrar y confirmar el `404`.
-7. Los errores controlados: borrado rechazado con `409` y una validación con `400`.
-8. La consulta con JOIN desde la API.
-
----
-
-## 12. Solución de problemas frecuentes
-
-### Al restaurar aparece el error 3169
-
-```text
-Msg 3169, Level 16, State 1
-The database was backed up on a server running database version 998. That version is incompatible with this server, which supports version 958.
-```
-
-**Causa.** El respaldo es de una versión de SQL Server más nueva que la instalada. La versión interna 998 corresponde a SQL Server 2025 y la 958 a SQL Server 2022. SQL Server no puede restaurar respaldos de versiones posteriores.
-
-**Solución.** Actualizar SQL Server a 2025. Si ya está instalado SQL Server 2022, se reemplaza el repositorio y se actualiza el paquete:
-
-```bash
-sudo rm /etc/apt/sources.list.d/mssql-server-2022.list
-curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/mssql-server-2025.list | sudo tee /etc/apt/sources.list.d/mssql-server-2025.list
-sudo apt-get update
-sudo apt-get install -y mssql-server
-sudo systemctl start mssql-server
-sqlcmd -S localhost -U sa -P '<CLAVE_SA>' -C -Q "SELECT @@VERSION;"
-```
-
-`apt-get install` detecta que hay una versión más nueva y la instala sobre la anterior. Al arrancar, SQL Server 2025 actualiza las bases del sistema (`master`, `msdb`, etc.) y conserva los logins existentes, incluida la contraseña de `sa`. La actualización **no se puede revertir**: las bases del sistema quedan en el formato de 2025. Si hay bases de datos propias en el servidor, conviene respaldarlas antes.
-
-Después de la actualización se repite el paso 3 de la sección [4.5](#45-restaurar-la-base-de-datos-adventureworks2025).
-
-### Login failed for user 'sa'
-
-**Causa.** La contraseña de `sa` no coincide. Para confirmarlo, revisar el registro de errores de SQL Server:
-
-```bash
-sudo grep "Login failed" /var/opt/mssql/log/errorlog | tail -3
-```
-
-Si aparece `Reason: Password did not match that for the login provided`, la contraseña es incorrecta.
-
-**Solución.** Si no se recuerda la contraseña, se restablece con `mssql-conf`. El servicio debe estar detenido mientras se cambia:
-
-```bash
-sudo systemctl stop mssql-server
-sudo /opt/mssql/bin/mssql-conf set-sa-password
-sudo systemctl start mssql-server
-```
-
-`set-sa-password` pide la contraseña nueva dos veces, con las mismas reglas de complejidad del paso 4.2. Si se ejecuta con el servicio activo, se detiene con el mensaje `An instance of SQL Server is running. Please stop the SQL Server service`.
-
-Para hacerlo sin preguntas, por ejemplo desde un script, la contraseña se pasa en la variable de entorno `MSSQL_SA_PASSWORD` y se usa la opción `-n` (sin preguntas):
-
-```bash
-sudo systemctl stop mssql-server
-sudo bash -c "MSSQL_SA_PASSWORD='<CLAVE_SA>' /opt/mssql/bin/mssql-conf -n set-sa-password"
-sudo systemctl start mssql-server
-```
-
-### sqlcmd: command not found
-
-La carpeta `/opt/mssql-tools18/bin` no está en el `PATH`. Repetir la parte final de la sección [4.3](#43-instalar-las-herramientas-de-línea-de-comandos-sqlcmd), o usar la ruta completa: `/opt/mssql-tools18/bin/sqlcmd`.
-
-### sqlcmd muestra "certificate verify failed"
-
-```text
-Sqlcmd: Error: Microsoft ODBC Driver 18 for SQL Server : SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate].
-```
-
-Falta la opción `-C`. Ver la explicación en la sección [4.3](#43-instalar-las-herramientas-de-línea-de-comandos-sqlcmd).
-
-### RESTORE no encuentra o no puede leer el archivo .bak
-
-SQL Server corre con el usuario `mssql` y solo puede leer archivos a los que ese usuario tiene acceso. Comprobar que el respaldo está en `/var/opt/mssql/backup/` y pertenece a `mssql`:
-
-```bash
-sudo ls -l /var/opt/mssql/backup/
-sudo chown mssql:mssql /var/opt/mssql/backup/AdventureWorks2025.bak
-```
-
-### Volver a restaurar AdventureWorks2025 borra el esquema api
-
-Si se ejecuta de nuevo el `RESTORE DATABASE` sobre una base `AdventureWorks2025` que ya existe, SQL Server la **reemplaza completa** por el contenido del respaldo, sin pedir confirmación. Se pierden el esquema `api`, los Stored Procedures y el usuario `api_user` dentro de la base (el login a nivel de servidor se conserva). La API empieza a fallar porque `api_user` ya no puede entrar a la base.
-
-Para recuperar todo basta con volver a ejecutar los scripts de la sección [5.1](#51-ejecutar-los-scripts-sql). El script `02` detecta que el login ya existe y solo vuelve a crear el usuario y los permisos.
-
-### Login failed for user 'api_user'
-
-- Revisar que `DB_PASSWORD` en `codigo/.env` sea la misma contraseña que se usó con `-v ApiUserPassword` en la sección 5.1.
-- Si hay que cambiar la contraseña de `api_user`, el script `02` no la cambia cuando el login ya existe. Se cambia así, como `sa`:
-
-```bash
-sqlcmd -S localhost -U sa -P '<CLAVE_SA>' -C -Q "ALTER LOGIN api_user WITH PASSWORD = '<CLAVE_API_USER>';"
-```
-
-### La API muestra "No se pudo conectar a SQL Server" al arrancar
-
-- Verificar que el servicio está activo: `systemctl status mssql-server --no-pager`. Si no lo está: `sudo systemctl start mssql-server`.
-- Verificar los valores de `codigo/.env`: servidor, puerto, base, usuario y contraseña.
-- La API sigue corriendo aunque no pueda conectarse, y se conecta sola en la siguiente petición cuando SQL Server esté disponible. `/health` responde `503` mientras tanto.
-
-### Error EADDRINUSE al iniciar la API
-
-```text
-No se pudo iniciar la API en el puerto 3000: listen EADDRINUSE: address already in use :::3000
-```
-
-La API termina en lugar de quedar abierta sin atender peticiones. Ya hay otro proceso usando el puerto 3000, normalmente otra instancia de la API que quedó abierta en otra terminal. Detenerla con `Ctrl+C` en esa terminal, o buscar el proceso y terminarlo:
-
-```bash
-ss -lntp | grep 3000
-kill <PID>
-```
-
-También se puede cambiar el puerto en `PORT` de `codigo/.env`, y actualizar la variable `baseUrl` en Postman.
-
-### Postman muestra "Could not send request" o "ECONNREFUSED"
-
-- La API no está corriendo: iniciarla con `npm start` desde `codigo/`.
-- La URL debe empezar con `http://`, no con `https://`.
-
-### Las peticiones del escenario 3 o 4 van a /departments/ sin número
-
-La variable `departmentId` está vacía porque no se ejecutó antes la creación (escenario 2). Ejecutar primero `POST crear departamento`.
-
----
-
-## 13. Referencias
+## 11. Referencias
 
 Referencias del enunciado:
 
