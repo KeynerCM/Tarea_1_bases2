@@ -15,7 +15,12 @@ app.use(errorHandler);
 
 const PORT = Number(process.env.PORT) || 3000;
 
-const server = app.listen(PORT, () => {
+// En Express 5 este callback también recibe el error si el puerto no se puede abrir.
+const server = app.listen(PORT, (err) => {
+  if (err) {
+    console.error(`No se pudo iniciar la API en el puerto ${PORT}: ${err.message}`);
+    process.exit(1);
+  }
   console.log(`API escuchando en http://localhost:${PORT}/api/v1`);
   getPool()
     .then(() => console.log(`Conectado a SQL Server, base ${process.env.DB_NAME}`))
