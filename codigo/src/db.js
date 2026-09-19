@@ -3,21 +3,13 @@
  * descripcion: Modulo de conexion a SQL Server. Arma la configuracion de la
  *   conexion a partir de las variables de entorno del archivo .env y administra
  *   un unico pool de conexiones que se reutiliza en todas las peticiones de la API.
- *   Autor: Keyner Cerdas Morales. Fecha: 2026-09-15.
  */
 const sql = require('mssql');
 
 /*
  * nombre: config
  * descripcion: Parametros de conexion que usa el driver mssql.
- *   - server, port, database, user, password: se leen del archivo .env.
- *   - encrypt: cifra la comunicacion con SQL Server, salvo que DB_ENCRYPT sea 'false'.
- *   - trustServerCertificate: acepta el certificado autofirmado de SQL Server en
- *     Linux; solo debe ser true en un entorno local.
- *   - useUTC: false porque ModifiedDate se guarda con GETDATE() (hora local del
- *     servidor), no en UTC; asi el driver interpreta bien las fechas.
- *   - pool: hasta 10 conexiones simultaneas; las que quedan sin uso 30 segundos
- *     se cierran.
+
  */
 const config = {
   server: process.env.DB_SERVER,

@@ -1,11 +1,8 @@
 /*
-====================================================================
  Archivo    : 06_sp_department_update.sql
  Proposito  : Actualizar el nombre y el grupo de un departamento.
               Devuelve las filas afectadas: 0 significa que el
               identificador no existe y la API responde 404.
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-15
  Parametros : @DepartmentID SMALLINT     - departamento a modificar
               @Name         NVARCHAR(50) - nuevo nombre (unico)
               @GroupName    NVARCHAR(50) - nuevo grupo
@@ -13,7 +10,6 @@
  Errores    : 50409 - ya existe otro departamento con ese nombre
  Ejecucion  : EXEC api.usp_Department_Update
                    @DepartmentID = 17, @Name = N'Nuevo', @GroupName = N'Grupo';
-====================================================================
 */
 
 USE AdventureWorks2025;

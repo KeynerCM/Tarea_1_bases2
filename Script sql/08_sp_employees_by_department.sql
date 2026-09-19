@@ -1,5 +1,4 @@
 /*
-====================================================================
  Archivo    : 08_sp_employees_by_department.sql
  Proposito  : Consultar los empleados de cada departamento cruzando
               tablas de los esquemas HumanResources y Person. Responde
@@ -10,8 +9,6 @@
                   -> EmployeeDepartmentHistory
                      -> Employee -> Person.Person
                      -> Shift
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-15
  Parametros : @DepartmentID SMALLINT - departamento a consultar
                                        (default NULL = todos)
               @SoloActivos  BIT      - 1 = solo empleados que siguen en
@@ -20,7 +17,6 @@
  Retorna    : Result set con departamento, nombre completo, cargo,
               turno, fecha de ingreso y fecha de salida.
  Ejecucion  : EXEC api.usp_EmployeesByDepartment_Select @DepartmentID = 7;
-====================================================================
 */
 
 USE AdventureWorks2025;

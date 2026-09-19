@@ -1,16 +1,13 @@
 /*
-====================================================================
+
  Archivo    : 01_schema_api.sql
  Proposito  : Crear el esquema 'api' que contiene todos los Stored
               Procedures expuestos por la API REST. Se usa un esquema
               propio para no alterar los esquemas originales de
               AdventureWorks y poder otorgar permisos granulares.
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-14
  Parametros : Ninguno
  Ejecucion  : sqlcmd -S localhost -U sa -P '<clave>' -C \
                      -d AdventureWorks2025 -i "Script sql/01_schema_api.sql"
-====================================================================
 */
 
 USE AdventureWorks2025;

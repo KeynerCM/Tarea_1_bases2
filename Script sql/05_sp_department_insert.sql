@@ -1,10 +1,8 @@
 /*
-====================================================================
  Archivo    : 05_sp_department_insert.sql
  Proposito  : Insertar un nuevo departamento y devolver el
               identificador generado.
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-15
+
  Parametros : @Name            NVARCHAR(50) - nombre del departamento (unico)
               @GroupName       NVARCHAR(50) - grupo al que pertenece
               @NewDepartmentID SMALLINT OUTPUT - identificador generado
@@ -14,7 +12,6 @@
                    @Name = N'Prueba', @GroupName = N'Grupo',
                    @NewDepartmentID = @Id OUTPUT;
               SELECT @Id;
-====================================================================
 */
 
 USE AdventureWorks2025;

@@ -1,18 +1,14 @@
 /*
-====================================================================
  Archivo    : 07_sp_department_delete.sql
  Proposito  : Eliminar un departamento. Devuelve las filas afectadas:
               0 significa que el identificador no existe y la API
               responde 404. Si el departamento tiene historial de
               empleados, la llave foranea impide borrarlo y se lanza
               un error legible que la API traduce a 409.
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-15
  Parametros : @DepartmentID SMALLINT - departamento a eliminar
  Retorna    : Columna FilasAfectadas (0 o 1).
  Errores    : 50547 - el departamento tiene empleados en su historial
  Ejecucion  : EXEC api.usp_Department_Delete @DepartmentID = 17;
-====================================================================
 */
 
 USE AdventureWorks2025;

@@ -1,13 +1,10 @@
 /*
-====================================================================
  Archivo    : 03_sp_department_select_all.sql
  Proposito  : Consultar los departamentos de la tabla
               HumanResources.Department con paginacion y filtro
               opcional por nombre. Responde al requerimiento de
               "procedimiento almacenado que retorne los resultados
               de una tabla".
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-14
  Parametros : @Offset INT           - filas a omitir (default 0)
               @Limit  INT           - filas a retornar (default 50)
               @Search NVARCHAR(50)  - filtro parcial por Name o
@@ -15,7 +12,6 @@
  Retorna    : Result set de departamentos y la columna TotalRegistros
               con el total de filas que cumplen el filtro.
  Ejecucion  : EXEC api.usp_Department_SelectAll @Offset = 0, @Limit = 5;
-====================================================================
 */
 
 USE AdventureWorks2025;

@@ -5,7 +5,6 @@
  *   Stored Procedures del esquema api por su nombre; este archivo no contiene
  *   sentencias SQL. Todos los valores se envian como parametros tipados, lo que
  *   impide la inyeccion de SQL.
- *   Autor: Keyner Cerdas Morales. Fecha: 2026-09-15.
  */
 const express = require('express');
 const { sql, getPool } = require('./db');

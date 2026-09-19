@@ -1,20 +1,17 @@
 /*
-====================================================================
  Archivo    : 02_login_api_user.sql
  Proposito  : Crear el login y el usuario de base de datos que utiliza
               la API REST, aplicando el principio de minimo privilegio:
               solo recibe EXECUTE sobre el esquema [api]. No puede
               ejecutar SELECT, INSERT, UPDATE ni DELETE directos contra
               las tablas de AdventureWorks.
- Autor      : Keyner Cerdas Morales
- Fecha      : 2026-09-14
+
  Parametros : $(ApiUserPassword) - contrasena del login api_user.
               Se entrega en tiempo de ejecucion, nunca se versiona.
  Ejecucion  : sqlcmd -S localhost -U sa -P '<clave>' -C \
                      -d AdventureWorks2025 \
                      -v ApiUserPassword="<clave_api_user>" \
                      -i "Script sql/02_login_api_user.sql"
-====================================================================
 */
 
 USE master;
