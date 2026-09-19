@@ -8,8 +8,6 @@ Completado y funcional.
 ### Enlace del video:
 https://youtu.be/8RNsEUSl7Wo
 
-Recordar que el video debe ser público para ser visto por el profesor.
-
 ---
 
 ## Tabla de contenidos
